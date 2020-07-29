@@ -1,0 +1,26 @@
+{
+  "name": "frontend-project-lvl2",
+  "version": "0.0.1",
+  "description": "Compares two configuration files and shows a difference.",
+  "main": "index.js",
+  "bin": {
+    "gendiff": "./bin/index.js"
+  },
+  "dependencies": {
+    "commander": "^6.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kirill-chertkov/frontend-project-lvl2.git"
+  },
+  "author": "Kirill Chertkov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kirill-chertkov/frontend-project-lvl2/issues"
+  },
+  "homepage": "https://github.com/kirill-chertkov/frontend-project-lvl2#readme"
+}
