@@ -1,13 +1,14 @@
 {
-  "name": "frontend-project-lvl2",
-  "version": "0.0.1",
+  "name": "@hexlet/code",
+  "version": "0.1.0",
   "description": "Compares two configuration files and shows a difference.",
   "main": "index.js",
+  "type": "module",
   "bin": {
     "gendiff": "./bin/index.js"
   },
   "dependencies": {
-    "commander": "^6.0.0"
+    "commander": "^9.0.0"
   },
   "devDependencies": {},
   "scripts": {
@@ -15,12 +16,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kirill-chertkov/frontend-project-lvl2.git"
+    "url": "git+https://github.com/chrtkv/frontend-project-lvl2.git"
   },
   "author": "Kirill Chertkov",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/kirill-chertkov/frontend-project-lvl2/issues"
+    "url": "https://github.com/chrtkv/frontend-project-lvl2/issues"
   },
-  "homepage": "https://github.com/kirill-chertkov/frontend-project-lvl2#readme"
+  "homepage": "https://github.com/chrtkv/frontend-project-lvl2#readme"
 }
