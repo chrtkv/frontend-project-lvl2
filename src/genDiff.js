@@ -1,9 +1,7 @@
 import { readFileSync } from "fs";
 
-const genDiff = (filePath1, filePath2) => {
-  const oldData = JSON.parse(readFileSync(filePath1));
-  const newData = JSON.parse(readFileSync(filePath2));
-
+// TODO: split to modules
+const compareDataChanges = (oldData, newData) => {
   const keys = [...new Set([...Object.keys(oldData), ...Object.keys(newData)])];
 
   return keys.reduce((acc, key) => {
@@ -55,5 +53,50 @@ const genDiff = (filePath1, filePath2) => {
     }
   }, {});
 };
+
+
+const formatOutput = (data, format = null) => {
+  const sortedKeys = Object.keys(data).sort();
+  const formattedLines = sortedKeys.reduce((acc, key) => {
+    const { status, oldValue, newValue } = data[key];
+    if (status === 'unchanged') {
+      acc = [
+        ...acc,
+        `  ${key}: ${oldValue}`
+      ];
+    }
+    if (status === 'changed') {
+      acc = [
+        ...acc,
+        `  - ${key}: ${oldValue}`,
+        `  + ${key}: ${newValue}`,
+      ];
+    }
+    if (status === 'deleted') {
+      acc = [
+        ...acc,
+        `  - ${key}: ${oldValue}`,
+      ];
+    }
+    if (status === 'added') {
+      acc = [
+        ...acc,
+        `  + ${key}: ${newValue}`,
+      ];
+    }
+    return acc;
+  }, [])
+  return `{\n${formattedLines.join('\n')}\n}`;
+}
+
+
+const genDiff = (filePath1, filePath2) => {
+  const oldData = JSON.parse(readFileSync(filePath1));
+  const newData = JSON.parse(readFileSync(filePath2));
+  const comparedData = compareDataChanges(oldData, newData);
+
+  return formatOutput(comparedData);
+}
+
 
 export default genDiff;
