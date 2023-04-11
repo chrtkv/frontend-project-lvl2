@@ -1,43 +1,43 @@
-import { readFileSync } from "fs";
+import { readFileSync } from 'fs';
 
 // TODO: split to modules
 const compareDataChanges = (oldData, newData) => {
   const keys = [...new Set([...Object.keys(oldData), ...Object.keys(newData)])];
 
-  return keys.reduce((acc, key) => {
+  return keys.reduce((acc, key) => { // eslint-disable-line array-callback-return, consistent-return
     if (oldData[key] === newData[key]) {
       return {
         ...acc,
         [key]: {
           oldValue: oldData[key],
           newValue: newData[key],
-          status: "unchanged",
+          status: 'unchanged',
         },
       };
     }
     if (
-      Object.keys(oldData).includes(key) &&
-      !Object.keys(newData).includes(key)
+      Object.keys(oldData).includes(key)
+      && !Object.keys(newData).includes(key)
     ) {
       return {
         ...acc,
         [key]: {
           oldValue: oldData[key],
           newValue: null,
-          status: "deleted",
+          status: 'deleted',
         },
       };
     }
     if (
-      !Object.keys(oldData).includes(key) &&
-      Object.keys(newData).includes(key)
+      !Object.keys(oldData).includes(key)
+      && Object.keys(newData).includes(key)
     ) {
       return {
         ...acc,
         [key]: {
           oldValue: null,
           newValue: newData[key],
-          status: "added",
+          status: 'added',
         },
       };
     }
@@ -47,48 +47,45 @@ const compareDataChanges = (oldData, newData) => {
         [key]: {
           oldValue: oldData[key],
           newValue: newData[key],
-          status: "changed",
+          status: 'changed',
         },
       };
     }
   }, {});
 };
 
-
-const formatOutput = (data, format = null) => {
+const formatOutput = (data) => {
   const sortedKeys = Object.keys(data).sort();
   const formattedLines = sortedKeys.reduce((acc, key) => {
     const { status, oldValue, newValue } = data[key];
-    if (status === 'unchanged') {
-      acc = [
-        ...acc,
-        `  ${key}: ${oldValue}`
-      ];
+    switch (status) {
+      case 'unchanged':
+        return [
+          ...acc,
+          `  ${key}: ${oldValue}`,
+        ];
+      case 'changed':
+        return [
+          ...acc,
+          `  - ${key}: ${oldValue}`,
+          `  + ${key}: ${newValue}`,
+        ];
+      case 'deleted':
+        return [
+          ...acc,
+          `  - ${key}: ${oldValue}`,
+        ];
+      case 'added':
+        return [
+          ...acc,
+          `  + ${key}: ${newValue}`,
+        ];
+      default:
+        throw new Error(`Invalid status: ${status}`);
     }
-    if (status === 'changed') {
-      acc = [
-        ...acc,
-        `  - ${key}: ${oldValue}`,
-        `  + ${key}: ${newValue}`,
-      ];
-    }
-    if (status === 'deleted') {
-      acc = [
-        ...acc,
-        `  - ${key}: ${oldValue}`,
-      ];
-    }
-    if (status === 'added') {
-      acc = [
-        ...acc,
-        `  + ${key}: ${newValue}`,
-      ];
-    }
-    return acc;
-  }, [])
+  }, []);
   return `{\n${formattedLines.join('\n')}\n}`;
-}
-
+};
 
 const genDiff = (filePath1, filePath2) => {
   const oldData = JSON.parse(readFileSync(filePath1));
@@ -96,7 +93,6 @@ const genDiff = (filePath1, filePath2) => {
   const comparedData = compareDataChanges(oldData, newData);
 
   return formatOutput(comparedData);
-}
-
+};
 
 export default genDiff;
