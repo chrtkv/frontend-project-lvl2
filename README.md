@@ -1,3 +1,5 @@
+[![Maintainability](https://api.codeclimate.com/v1/badges/2b095d86afff7fd86101/maintainability)](https://codeclimate.com/github/chrtkv/frontend-project-lvl2/maintainability)
+
 # Diff Generator
 
 Hexlet School Study Project
