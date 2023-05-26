@@ -62,7 +62,7 @@ const formatOutput = (data) => {
       case 'unchanged':
         return [
           ...acc,
-          `  ${key}: ${oldValue}`,
+          `    ${key}: ${oldValue}`,
         ];
       case 'changed':
         return [
