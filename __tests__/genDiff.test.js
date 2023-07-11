@@ -7,7 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 test('genDiff', () => {
-  const getFixturePath = (filename) => path.join(__dirname, '__fixtures__', filename);
+  const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
   const expectedResult = readFileSync(getFixturePath('result.txt'), 'utf-8');
   const fileName1 = 'before.json';
   const fileName2 = 'after.json';
