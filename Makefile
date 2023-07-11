@@ -6,3 +6,6 @@ lint:
 
 test:
 	npm test --colors
+
+test-coverage:
+	npm test -- --coverage --coverageProvider=v8
