@@ -1,4 +1,6 @@
 import { readFileSync } from 'fs';
+import { extname } from 'path';
+import YAML from 'yaml';
 
 // TODO: split to modules
 const compareDataChanges = (oldData, newData) => {
@@ -88,11 +90,20 @@ const formatOutput = (data) => {
 };
 
 const genDiff = (filePath1, filePath2) => {
-  const oldData = JSON.parse(readFileSync(filePath1));
-  const newData = JSON.parse(readFileSync(filePath2));
-  const comparedData = compareDataChanges(oldData, newData);
-
-  return formatOutput(comparedData);
+  const extension = extname(filePath1);
+  if (extension === '.json') {
+    const oldData = JSON.parse(readFileSync(filePath1));
+    const newData = JSON.parse(readFileSync(filePath2));
+    const comparedData = compareDataChanges(oldData, newData);
+    return formatOutput(comparedData);
+  }
+  if (extension === '.yml' || extension === '.yaml') {
+    const oldData = YAML.parse(readFileSync(filePath1).toString());
+    const newData = YAML.parse(readFileSync(filePath2).toString());
+    const comparedData = compareDataChanges(oldData, newData);
+    return formatOutput(comparedData);
+  }
+  return 'Invalid file format';
 };
 
 export default genDiff;
