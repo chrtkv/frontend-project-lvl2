@@ -7,7 +7,10 @@ overrides: []
 parserOptions:
   ecmaVersion: latest
   sourceType: module
+plugins:
+  - fp
 rules:
-  no-console: "off"
-  "import/extensions": "off"
-  "no-underscore-dangle": [2, { "allow": ["__filename", "__dirname"] }]
+  no-console: off
+  import/extensions: off
+  fp/no-mutating-methods: ["error", {"allowedObjects": ["_"]}]
+  no-underscore-dangle: [2, { "allow": ["__filename", "__dirname"] }]
