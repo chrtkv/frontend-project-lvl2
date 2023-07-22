@@ -17,22 +17,21 @@ const compareDataChanges = (oldData, newData) => {
   }
 
   if (oldData !== undefined && newData === undefined) {
-    return { oldValue: oldData, newValue: newData, status: 'deleted' };
+    return { oldValue: oldData, newValue: newData, status: 'removed' };
   }
 
   if (oldData === undefined && newData !== undefined) {
     return { oldValue: oldData, newValue: newData, status: 'added' };
   }
 
-  return { oldValue: oldData, newValue: newData, status: 'changed' };
-};
-
-const formatIndent = (indent, symbol) => {
-  const cb = (char, index, arr) => ((arr.length - 2 === index) ? symbol : char);
-  return indent.split('').map(cb).join('');
+  return { oldValue: oldData, newValue: newData, status: 'updated' };
 };
 
 const formatOutput = (diff, indentChar = ' ', indentCharsCount = 4) => {
+  const formatIndent = (indent, symbol) => {
+    const cb = (char, index, arr) => ((arr.length - 2 === index) ? symbol : char);
+    return indent.split('').map(cb).join('');
+  };
   const iter = (data, depth) => {
     if (typeof data !== 'object') {
       return data.toString();
@@ -51,13 +50,13 @@ const formatOutput = (diff, indentChar = ' ', indentCharsCount = 4) => {
             ...acc,
             `${indent}${key}: ${oldValue}`,
           ];
-        case 'changed':
+        case 'updated':
           return [
             ...acc,
             `${formatIndent(indent, '-')}${key}: ${iter(oldValue, depth + 1)}`,
             `${formatIndent(indent, '+')}${key}: ${iter(newValue, depth + 1)}`,
           ];
-        case 'deleted':
+        case 'removed':
           return [
             ...acc,
             `${formatIndent(indent, '-')}${key}: ${iter(oldValue, depth + 1)}`,
@@ -81,14 +80,59 @@ const formatOutput = (diff, indentChar = ' ', indentCharsCount = 4) => {
   return iter(diff, 1);
 };
 
-const genDiff = (filePath1, filePath2) => {
+const formatPlainOutput = (diff) => {
+  const formatValue = (value) => {
+    if (typeof value === 'object' && value !== null) {
+      return '[complex value]';
+    }
+    if (typeof value === 'string') {
+      return `'${value}'`;
+    }
+    return value;
+  };
+  const iter = (data, path) => {
+    const sortedKeys = Object.keys(data).sort();
+    const formattedLines = sortedKeys.reduce((acc, key) => {
+      const { oldValue, newValue, status } = data[key];
+      if (!status) {
+        return [...acc, `${iter(data[key], `${path}${key}.`)}`];
+      }
+      const formattedOldValue = formatValue(oldValue);
+      const formattedNewValue = formatValue(newValue);
+      switch (status) {
+        case 'updated':
+          return [
+            ...acc,
+            `Property '${path}${key}' was updated. From ${formattedOldValue} to ${formattedNewValue}`,
+          ];
+        case 'removed':
+          return [
+            ...acc,
+            `Property '${path}${key}' was removed`,
+          ];
+        case 'added':
+          return [
+            ...acc,
+            `Property '${path}${key}' was added with value: ${formattedNewValue}`,
+          ];
+        default:
+          return acc;
+      }
+    }, []);
+
+    return formattedLines.join('\n');
+  };
+  return iter(diff, '');
+};
+
+const genDiff = (filePath1, filePath2, format) => {
   const file1extension = extname(filePath1);
   const file2extension = extname(filePath2);
   const file1data = parser(readFileSync(filePath1, 'utf-8'), file1extension);
   const file2data = parser(readFileSync(filePath2, 'utf-8'), file2extension);
   const comparedData = compareDataChanges(file1data, file2data);
   // return JSON.stringify(comparedData);
-  return formatOutput(comparedData);
+  return format === 'plain' ? formatPlainOutput(comparedData) : formatOutput(comparedData);
 };
 
 export default genDiff;
