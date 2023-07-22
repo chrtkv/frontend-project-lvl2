@@ -1,5 +1,7 @@
 import { readFileSync } from 'fs';
 import { extname } from 'path';
+import sortBy from 'lodash/fp/sortBy.js';
+import _ from 'lodash';
 import parser from './parser.js';
 
 const compareDataChanges = (oldData, newData) => {
@@ -41,7 +43,7 @@ const formatOutput = (diff, indentChar = ' ', indentCharsCount = 4) => {
     }
     const indent = indentChar.repeat(depth * indentCharsCount);
     const bracketIndent = indentChar.repeat((depth * indentCharsCount) - indentCharsCount);
-    const sortedKeys = (Object.keys(data)).toSorted();
+    const sortedKeys = sortBy(_.identity)(Object.keys(data));
     const formattedLines = sortedKeys.reduce((acc, key) => {
       const { oldValue, newValue, status } = data[key];
       switch (status) {
@@ -91,7 +93,7 @@ const formatPlainOutput = (diff) => {
     return value;
   };
   const iter = (data, path) => {
-    const sortedKeys = (Object.keys(data)).toSorted();
+    const sortedKeys = sortBy(_.identity)(Object.keys(data));
     const formattedLines = sortedKeys.reduce((acc, key) => {
       const { oldValue, newValue, status } = data[key];
       if (!status) {
