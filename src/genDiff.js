@@ -41,7 +41,7 @@ const formatOutput = (diff, indentChar = ' ', indentCharsCount = 4) => {
     }
     const indent = indentChar.repeat(depth * indentCharsCount);
     const bracketIndent = indentChar.repeat((depth * indentCharsCount) - indentCharsCount);
-    const sortedKeys = Object.keys(data).sort();
+    const sortedKeys = [...Object.keys(data)].sort();
     const formattedLines = sortedKeys.reduce((acc, key) => {
       const { oldValue, newValue, status } = data[key];
       switch (status) {
@@ -91,7 +91,7 @@ const formatPlainOutput = (diff) => {
     return value;
   };
   const iter = (data, path) => {
-    const sortedKeys = Object.keys(data).sort();
+    const sortedKeys = [...Object.keys(data)].sort();
     const formattedLines = sortedKeys.reduce((acc, key) => {
       const { oldValue, newValue, status } = data[key];
       if (!status) {
