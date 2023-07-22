@@ -31,3 +31,11 @@ test('genDiff with different formats', () => {
   const result = genDiff(getFixturePath(fileName1), getFixturePath(fileName2));
   expect(result).toEqual(expectedResult);
 });
+
+test('plain genDiff', () => {
+  const expectedResult = readFileSync(getFixturePath('plain_result.txt'), 'utf-8');
+  const fileName1 = 'before.json';
+  const fileName2 = 'after.json';
+  const result = genDiff(getFixturePath(fileName1), getFixturePath(fileName2), 'plain');
+  expect(result).toEqual(expectedResult);
+});
