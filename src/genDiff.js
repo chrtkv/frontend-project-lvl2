@@ -124,6 +124,9 @@ const genDiff = (filePath1, filePath2, format) => {
   const file2data = parser(readFileSync(filePath2, 'utf-8'), file2extension);
   const comparedData = compareDataChanges(file1data, file2data);
   // return JSON.stringify(comparedData);
+  if (format === 'json') {
+    return JSON.stringify(comparedData);
+  }
   return format === 'plain' ? formatPlainOutput(comparedData) : formatOutput(comparedData);
 };
 
