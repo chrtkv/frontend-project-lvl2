@@ -12,5 +12,4 @@ plugins:
 rules:
   no-console: off
   import/extensions: off
-  fp/no-mutating-methods: ["error", {"allowedObjects": ["_"]}]
   no-underscore-dangle: [2, { "allow": ["__filename", "__dirname"] }]
