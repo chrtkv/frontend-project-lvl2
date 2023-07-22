@@ -99,22 +99,14 @@ const formatPlainOutput = (diff) => {
       }
       const formattedOldValue = formatValue(oldValue);
       const formattedNewValue = formatValue(newValue);
+      const commonPart = `Property '${path}${key}' was ${status}`;
       switch (status) {
         case 'updated':
-          return [
-            ...acc,
-            `Property '${path}${key}' was updated. From ${formattedOldValue} to ${formattedNewValue}`,
-          ];
+          return [...acc, `${commonPart}. From ${formattedOldValue} to ${formattedNewValue}`];
         case 'removed':
-          return [
-            ...acc,
-            `Property '${path}${key}' was removed`,
-          ];
+          return [...acc, commonPart];
         case 'added':
-          return [
-            ...acc,
-            `Property '${path}${key}' was added with value: ${formattedNewValue}`,
-          ];
+          return [...acc, `${commonPart} with value: ${formattedNewValue}`];
         default:
           return acc;
       }
