@@ -11,6 +11,6 @@ export default (formatName) => {
     case 'stylish':
       return stylishFormatter;
     default:
-      return stylishFormatter;
+      throw new Error(`Unknown format: ${formatName}`);
   }
 };
