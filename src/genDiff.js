@@ -1,7 +1,7 @@
 import { readFileSync } from 'fs';
 import { extname } from 'path';
 import parser from './parser.js';
-import formatters from '../formatters/index.js';
+import getFormatter from '../formatters/index.js';
 
 const compareDataChanges = (oldData, newData) => {
   const isObject = (value) => typeof value === 'object' && !Array.isArray(value) && value !== null;
@@ -41,7 +41,7 @@ const genDiff = (filePath1, filePath2, formatName) => {
   const file2data = parser(readFileSync(filePath2, 'utf-8'), file2extension);
   const comparedData = compareDataChanges(file1data, file2data);
 
-  const formatter = formatters[formatName];
+  const formatter = getFormatter(formatName);
   const formattedDiff = formatter(comparedData);
   return formattedDiff;
 };
