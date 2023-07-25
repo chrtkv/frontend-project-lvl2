@@ -1,45 +1,35 @@
 import { readFileSync } from 'node:fs';
-import { getFixturePath, getRandomElementFromArray } from './__utils__/helpers';
+import getFixturePath from './__utils__/helpers';
 
 import genDiff from '../src/genDiff';
 
 describe('genDiff tests', () => {
-  const fixedTestCases = [
-    // formatName, inputFile1, inputFile2, resultFile
-    ['default', 'before.json', 'after.json', 'stylish_result.txt'],
-    ['stylish', 'before.json', 'after.json', 'stylish_result.txt'],
-    ['plain', 'before.json', 'after.json', 'plain_result.txt'],
-    ['json', 'before.json', 'after.json', 'json_result.txt'],
-    ['default', 'before.yml', 'after.yml', 'stylish_result.txt'],
-    ['stylish', 'before.yml', 'after.yml', 'stylish_result.txt'],
-    ['plain', 'before.yml', 'after.yml', 'plain_result.txt'],
-    ['json', 'before.yml', 'after.yml', 'json_result.txt'],
-  ];
+  const formatNames = ['plain', 'stylish', 'json', 'default'];
+  const fileExtensions = ['.yml', '.json', '.yaml'];
 
-  const formatNames = ['plain', 'stylish', 'json'];
-  const fileExtensions = ['.yml', '.json'];
-  const randomCasesCount = 20;
-  const randomTestCases = Array.from({ length: randomCasesCount }, () => {
-    const formatter = getRandomElementFromArray(formatNames);
-    const file1extension = getRandomElementFromArray(fileExtensions);
-    const file2extension = getRandomElementFromArray(fileExtensions);
-    return [
-      formatter,
-      `before${file1extension}`,
-      `after${file2extension}`,
-      `${formatter}_result.txt`,
-    ];
-  });
+  const getAllCombinations = (formats, extensions, defaultFormat = 'stylish') => formats
+    .flatMap((format) => {
+      const formatName = format === 'default' ? defaultFormat : format;
+      return extensions
+        .flatMap((ext1) => extensions.map((ext2) => [
+          formatName,
+          `before${ext1}`,
+          `after${ext2}`,
+          `${formatName}_result.txt`,
+        ]));
+    });
 
-  test.each([...fixedTestCases, ...randomTestCases])(
+  const allCombinations = getAllCombinations(formatNames, fileExtensions);
+
+  test.each(allCombinations)(
     'generate diff with %s formatter using %s and %s',
     (formatName, inputFile1, inputFile2, resultFile) => {
-      const filePath1 = getFixturePath(inputFile1);
-      const filePath2 = getFixturePath(inputFile2);
+      const filepath1 = getFixturePath(inputFile1);
+      const filepath2 = getFixturePath(inputFile2);
       const resultPath = getFixturePath(resultFile);
 
       const expectedResult = readFileSync(resultPath, 'utf-8');
-      const result = genDiff(filePath1, filePath2, formatName === 'default' ? undefined : formatName);
+      const result = genDiff(filepath1, filepath2, formatName === 'default' ? undefined : formatName);
 
       expect(result).toEqual(expectedResult);
     },
