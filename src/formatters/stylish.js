@@ -1,9 +1,8 @@
-import sortBy from 'lodash/fp/sortBy.js';
 import _ from 'lodash';
 
 export default (diff, indentChar = ' ', indentCharsCount = 4) => {
-  const formatIndent = (indent, symbol) => {
-    const cb = (char, index, arr) => ((arr.length - 2 === index) ? symbol : char);
+  const formatIndent = (indent, statusSign) => {
+    const cb = (char, index, arr) => ((arr.length - 2 === index) ? statusSign : char);
     return indent.split('').map(cb).join('');
   };
   const iter = (data, depth) => {
