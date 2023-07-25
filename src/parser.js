@@ -1,8 +1,13 @@
 import YAML from 'yaml';
 
-const parser = (data, format) => {
-  const parsedData = format === 'json' ? JSON.parse(data) : YAML.parse(data);
-  return parsedData;
+export default (data, extension) => {
+  switch (extension) {
+    case '.yml':
+    case '.yaml':
+      return YAML.parse(data);
+    case '.json':
+      return JSON.parse(data);
+    default:
+      throw new Error(`Unknown extension ${extension}`);
+  }
 };
-
-export default parser;
