@@ -1,4 +1,3 @@
-import sortBy from 'lodash/fp/sortBy.js';
 import _ from 'lodash';
 
 export default (diff) => {
@@ -12,7 +11,7 @@ export default (diff) => {
     return value;
   };
   const iter = (data, path) => {
-    const sortedKeys = sortBy(_.identity)(Object.keys(data));
+    const sortedKeys = _.sortBy(Object.keys(data));
     const formattedLines = sortedKeys.reduce((acc, key) => {
       const { oldValue, newValue, status } = data[key];
       if (!status) {

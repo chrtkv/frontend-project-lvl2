@@ -15,7 +15,7 @@ export default (diff, indentChar = ' ', indentCharsCount = 4) => {
     }
     const indent = indentChar.repeat(depth * indentCharsCount);
     const bracketIndent = indentChar.repeat((depth * indentCharsCount) - indentCharsCount);
-    const sortedKeys = sortBy(_.identity)(Object.keys(data));
+    const sortedKeys = _.sortBy(Object.keys(data));
     const formattedLines = sortedKeys.reduce((acc, key) => {
       const { oldValue, newValue, status } = data[key];
       switch (status) {
