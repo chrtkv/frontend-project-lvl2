@@ -19,9 +19,9 @@ describe('genDiff tests', () => {
         ]));
     });
 
-  const allCombinations = getAllCombinations(formatNames, fileExtensions);
+  const combinations = getAllCombinations(formatNames, fileExtensions);
 
-  test.each(allCombinations)(
+  test.each(combinations)(
     'generate diff with %s formatter using %s and %s',
     (formatName, inputFile1, inputFile2, resultFile) => {
       const filepath1 = getFixturePath(inputFile1);
