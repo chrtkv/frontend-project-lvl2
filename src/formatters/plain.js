@@ -2,16 +2,16 @@ import _ from 'lodash';
 
 export default (diff) => {
   const formatValue = (value) => {
-    if (typeof value === 'object' && value !== null) {
+    if (_.isPlainObject(value)) {
       return '[complex value]';
     }
-    if (typeof value === 'string') {
+    if (_.isString(value)) {
       return `'${value}'`;
     }
     return value;
   };
   const iter = (data, path) => {
-    const sortedKeys = _.sortBy(Object.keys(data));
+    const sortedKeys = _.sortBy(_.keys(data));
     const formattedLines = sortedKeys.reduce((acc, key) => {
       const { oldValue, newValue, status } = data[key];
       if (!status) {

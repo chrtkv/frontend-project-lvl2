@@ -5,16 +5,17 @@ export default (diff, indentChar = ' ', indentCharsCount = 4) => {
     const cb = (char, index, arr) => ((arr.length - 2 === index) ? statusSign : char);
     return indent.split('').map(cb).join('');
   };
+
   const iter = (data, depth) => {
-    if (typeof data !== 'object') {
-      return data.toString();
-    }
-    if (data === null) {
+    if (_.isNull(data)) {
       return 'null';
+    }
+    if (!_.isPlainObject(data)) {
+      return data.toString();
     }
     const indent = indentChar.repeat(depth * indentCharsCount);
     const bracketIndent = indentChar.repeat((depth * indentCharsCount) - indentCharsCount);
-    const sortedKeys = _.sortBy(Object.keys(data));
+    const sortedKeys = _.sortBy(_.keys(data));
     const formattedLines = sortedKeys.reduce((acc, key) => {
       const { oldValue, newValue, status } = data[key];
       switch (status) {
