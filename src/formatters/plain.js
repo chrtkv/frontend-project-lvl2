@@ -10,6 +10,7 @@ export default (diff) => {
     }
     return value;
   };
+
   const iter = (data, path) => {
     const sortedKeys = _.sortBy(_.keys(data));
     const formattedLines = sortedKeys.reduce((acc, key) => {
@@ -21,6 +22,8 @@ export default (diff) => {
       const formattedNewValue = formatValue(newValue);
       const commonPart = `Property '${path}${key}' was ${status}`;
       switch (status) {
+        case 'unchanged':
+          return acc;
         case 'updated':
           return [...acc, `${commonPart}. From ${formattedOldValue} to ${formattedNewValue}`];
         case 'removed':
@@ -28,7 +31,7 @@ export default (diff) => {
         case 'added':
           return [...acc, `${commonPart} with value: ${formattedNewValue}`];
         default:
-          return acc;
+          throw new Error(`Unknown status: ${status}`);
       }
     }, []);
 

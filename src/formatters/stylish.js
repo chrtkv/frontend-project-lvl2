@@ -18,6 +18,9 @@ export default (diff, indentChar = ' ', indentCharsCount = 4) => {
     const sortedKeys = _.sortBy(_.keys(data));
     const formattedLines = sortedKeys.reduce((acc, key) => {
       const { oldValue, newValue, status } = data[key];
+      if (!status) {
+        return [...acc, `${indent}${key}: ${iter(data[key], depth + 1)}`];
+      }
       switch (status) {
         case 'unchanged':
           return [
@@ -41,7 +44,7 @@ export default (diff, indentChar = ' ', indentCharsCount = 4) => {
             `${formatIndent(indent, '+')}${key}: ${iter(newValue, depth + 1)}`,
           ];
         default:
-          return [...acc, `${indent}${key}: ${iter(data[key], depth + 1)}`];
+          throw new Error(`Unknown status: ${status}`);
       }
     }, []);
 
