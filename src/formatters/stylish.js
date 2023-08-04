@@ -6,48 +6,52 @@ export default (diff, indentChar = ' ', indentCharsCount = 4) => {
     return indent.split('').map(cb).join('');
   };
 
-  const formatValue = (value, depth) => {
-    if (!_.isObject(value)) {
-      return `${value}`;
-    }
-
+  const iter = (data, depth) => {
     const indent = indentChar.repeat(depth * indentCharsCount);
     const bracketIndent = indentChar.repeat((depth - 1) * indentCharsCount);
-    const formattedLines = Object.entries(value)
-      .map(([key, val]) => `${indent}${key}: ${formatValue(val, depth + 1)}`);
+
+    if (!_.isObject(data)) {
+      return `${data}`;
+    }
+
+    if (_.isPlainObject(data)) {
+      return iter(
+        Object.entries(data).map(([key, val]) => ({ key, value1: val, type: 'unchanged' })),
+        depth,
+      );
+    }
+
+    const formattedLines = data.flatMap(({
+      key,
+      type,
+      value1,
+      value2,
+      children,
+    }) => {
+      switch (type) {
+        case 'nested':
+          return `${indent}${key}: ${iter(children, depth + 1)}`;
+        case 'unchanged':
+          return `${indent}${key}: ${iter(value1, depth + 1)}`;
+        case 'updated':
+          return [
+            `${formatIndent(indent, '-')}${key}: ${iter(value1, depth + 1)}`,
+            `${formatIndent(indent, '+')}${key}: ${iter(value2, depth + 1)}`,
+          ];
+        case 'removed':
+          return `${formatIndent(indent, '-')}${key}: ${iter(value1, depth + 1)}`;
+        case 'added':
+          return `${formatIndent(indent, '+')}${key}: ${iter(value2, depth + 1)}`;
+        default:
+          throw new Error(`Unknown type: ${type}`);
+      }
+    });
 
     return [
       '{',
       ...formattedLines,
       `${bracketIndent}}`,
     ].join('\n');
-  };
-
-  const iter = (data, depth) => {
-    const indent = indentChar.repeat(depth * indentCharsCount);
-    const bracketIndent = indentChar.repeat((depth - 1) * indentCharsCount);
-
-    const formattedLines = data.flatMap(({ value1, value2, key, type, children }) => {
-      switch (type) {
-        case 'nested':
-          return `${indent}${key}: ${iter(children, depth + 1)}`;
-        case 'unchanged':
-          return `${indent}${key}: ${formatValue(value1, depth + 1)}`;
-        case 'updated':
-          return [
-            `${formatIndent(indent, '-')}${key}: ${formatValue(value1, depth + 1)}`,
-            `${formatIndent(indent, '+')}${key}: ${formatValue(value2, depth + 1)}`,
-          ];
-        case 'removed':
-          return `${formatIndent(indent, '-')}${key}: ${formatValue(value1, depth + 1)}`;
-        case 'added':
-          return `${formatIndent(indent, '+')}${key}: ${formatValue(value2, depth + 1)}`;
-        default:
-          throw new Error(`Unknown type: ${type}`);
-      }
-    });
-
-    return ['{', ...formattedLines, `${bracketIndent}}`].join('\n');
   };
 
   return iter(diff, 1);
