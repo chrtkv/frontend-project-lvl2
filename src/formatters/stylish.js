@@ -14,23 +14,18 @@ export default (diff, indentChar = ' ', indentCharsCount = 4) => {
       return `${data}`;
     }
 
-    if (_.isPlainObject(data)) {
-      return iter(
-        Object.entries(data).map(([key, val]) => ({ key, value1: val, type: 'unchanged' })),
-        depth,
-      );
+    if (_.has(data, 'children')) {
+      return `${indent}${data.key}: ${iter(data.children, depth + 1)}`;
     }
 
-    const formattedLines = data.flatMap(({
-      key,
-      type,
-      value1,
-      value2,
-      children,
-    }) => {
+    if (_.has(data, 'type')) {
+      const {
+        type,
+        key,
+        value1,
+        value2,
+      } = data;
       switch (type) {
-        case 'nested':
-          return `${indent}${key}: ${iter(children, depth + 1)}`;
         case 'unchanged':
           return `${indent}${key}: ${iter(value1, depth + 1)}`;
         case 'updated':
@@ -45,8 +40,15 @@ export default (diff, indentChar = ' ', indentCharsCount = 4) => {
         default:
           throw new Error(`Unknown type: ${type}`);
       }
-    });
+    }
 
+    if (_.isPlainObject(data)) {
+      const formattedLines = Object.entries(data)
+        .map(([key, value]) => `${indent}${key}: ${iter(value, depth + 1)}`);
+      return iter(formattedLines, depth);
+    }
+
+    const formattedLines = data.flatMap((item) => iter(item, depth));
     return [
       '{',
       ...formattedLines,
