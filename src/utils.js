@@ -1,6 +1,6 @@
+import fs from 'fs';
 import _ from 'lodash';
 import path from 'path';
-import fs from 'fs';
 
 const readFile = (filepath) => {
   const fullPath = path.resolve(process.cwd(), filepath);
@@ -23,32 +23,50 @@ const buildComparisonTree = (data1, data2) => {
       }
 
       return {
-        type: 'nested',
-        key: keyName,
         children,
+        key: keyName,
+        type: 'nested',
       };
     }
 
-    let type;
     if (_.isUndefined(innerData1) && !_.isUndefined(innerData2)) {
-      type = 'added';
-    } else if (!_.isUndefined(innerData1) && _.isUndefined(innerData2)) {
-      type = 'removed';
-    } else if (!_.isEqual(innerData1, innerData2)) {
-      type = 'updated';
-    } else if (_.isEqual(innerData1, innerData2)) {
-      type = 'unchanged';
+      return {
+        key: keyName,
+        type: 'added',
+        value: innerData2,
+      };
     }
-
-    return {
-      type,
-      key: keyName,
-      value1: innerData1,
-      value2: innerData2,
-    };
+    if (!_.isUndefined(innerData1) && _.isUndefined(innerData2)) {
+      return {
+        key: keyName,
+        type: 'removed',
+        value: innerData1,
+      };
+    }
+    if (!_.isEqual(innerData1, innerData2)) {
+      return [
+        {
+          key: keyName,
+          type: 'removed',
+          value: innerData1,
+        },
+        {
+          key: keyName,
+          type: 'added',
+          value: innerData2,
+        },
+      ];
+    }
+    if (_.isEqual(innerData1, innerData2)) {
+      return {
+        key: keyName,
+        type: 'unchanged',
+        value: innerData1,
+      };
+    }
   };
 
-  return iter(data1, data2);
+  return iter(data1, data2).flat();
 };
 
-export { readFile, extractFormat, buildComparisonTree };
+export { buildComparisonTree, extractFormat, readFile };
