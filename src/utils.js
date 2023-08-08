@@ -16,7 +16,7 @@ const buildComparisonTree = (data1, data2) => {
   const iter = (innerData1, innerData2, keyName) => {
     if (_.isPlainObject(innerData1) && _.isPlainObject(innerData2)) {
       const keys = _.sortBy(_.union(_.keys(innerData1), _.keys(innerData2)));
-      const children = keys.map((key) => iter(innerData1[key], innerData2[key], key));
+      const children = keys.map((key) => iter(innerData1[key], innerData2[key], key)).flat();
 
       if (_.isUndefined(keyName)) {
         return children;
@@ -66,7 +66,7 @@ const buildComparisonTree = (data1, data2) => {
     }
   };
 
-  return iter(data1, data2).flat();
+  return iter(data1, data2);
 };
 
 export { buildComparisonTree, extractFormat, readFile };
