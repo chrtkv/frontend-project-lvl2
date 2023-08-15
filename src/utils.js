@@ -16,7 +16,7 @@ const buildComparisonTree = (data1, data2) => {
   const iter = (innerData1, innerData2, keyName) => {
     if (_.isPlainObject(innerData1) && _.isPlainObject(innerData2)) {
       const keys = _.sortBy(_.union(_.keys(innerData1), _.keys(innerData2)));
-      const children = keys.map((key) => iter(innerData1[key], innerData2[key], key)).flat();
+      const children = keys.map((key) => iter(innerData1[key], innerData2[key], key));
 
       if (_.isUndefined(keyName)) {
         return children;
@@ -33,37 +33,30 @@ const buildComparisonTree = (data1, data2) => {
       return {
         key: keyName,
         type: 'added',
-        value: innerData2,
+        value2: innerData2,
       };
     }
     if (!_.isUndefined(innerData1) && _.isUndefined(innerData2)) {
       return {
         key: keyName,
         type: 'removed',
-        value: innerData1,
+        value1: innerData1,
       };
     }
     if (!_.isEqual(innerData1, innerData2)) {
-      return [
-        {
-          key: keyName,
-          type: 'removed',
-          value: innerData1,
-        },
-        {
-          key: keyName,
-          type: 'added',
-          value: innerData2,
-        },
-      ];
-    }
-    if (_.isEqual(innerData1, innerData2)) {
       return {
         key: keyName,
-        type: 'unchanged',
-        value: innerData1,
+        type: 'updated',
+        value1: innerData1,
+        value2: innerData2,
       };
     }
+
+    return {
+      key: keyName,
+      type: 'unchanged',
+      value1: innerData1,
+    };
   };
 
   return iter(data1, data2);

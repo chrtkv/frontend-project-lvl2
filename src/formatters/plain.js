@@ -1,41 +1,48 @@
 import _ from 'lodash';
 
-export default (diff) => {
-  const formatValue = (value) => {
-    if (_.isPlainObject(value)) {
-      return '[complex value]';
-    }
-    if (_.isString(value)) {
-      return `'${value}'`;
-    }
-    return value;
-  };
+const format = (data, path = '') => {
+  if (_.has(data, 'type')) {
+    const {
+      children,
+      key,
+      type,
+      value1,
+      value2,
+    } = data;
+    const commonPart = `Property '${path}${key}' was ${type}`;
 
-  const iter = (data, path) => {
-    const sortedKeys = _.sortBy(_.keys(data));
-    const formattedLines = sortedKeys.reduce((acc, key) => {
-      const { oldValue, newValue, status } = data[key];
-      if (!status) {
-        return [...acc, `${iter(data[key], `${path}${key}.`)}`];
-      }
-      const formattedOldValue = formatValue(oldValue);
-      const formattedNewValue = formatValue(newValue);
-      const commonPart = `Property '${path}${key}' was ${status}`;
-      switch (status) {
-        case 'unchanged':
-          return acc;
-        case 'updated':
-          return [...acc, `${commonPart}. From ${formattedOldValue} to ${formattedNewValue}`];
-        case 'removed':
-          return [...acc, commonPart];
-        case 'added':
-          return [...acc, `${commonPart} with value: ${formattedNewValue}`];
-        default:
-          throw new Error(`Unknown status: ${status}`);
-      }
-    }, []);
+    switch (type) {
+      case 'nested':
+        return `${format(children, `${path}${key}.`)}`;
+      case 'unchanged':
+        return '';
+      case 'updated':
+        return `${commonPart}. From ${format(value1, path)} to ${format(value2, path)}`;
+      case 'removed':
+        return commonPart;
+      case 'added':
+        return `${commonPart} with value: ${format(value2, path)}`;
+      default:
+        throw new Error(`Unknown type: ${type}`);
+    }
+  }
 
-    return formattedLines.join('\n');
-  };
-  return iter(diff, '');
+  if (_.isPlainObject(data)) {
+    return '[complex value]';
+  }
+
+  if (_.isString(data)) {
+    return `'${data}'`;
+  }
+
+  if (_.isArray(data)) {
+    return data
+      .map((item) => format(item, path))
+      .filter(_.identity)
+      .join('\n');
+  }
+
+  return data;
 };
+
+export default format;
