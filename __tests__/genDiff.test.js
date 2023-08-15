@@ -25,7 +25,7 @@ describe('genDiff tests', () => {
     (formatter, fileFormat, filepath1, filepath2) => {
       const expectedResult = getExpected(formatter);
       const actualResult = genDiff(filepath1, filepath2, formatter);
-      expect(expectedResult).toEqual(actualResult);
+      expect(actualResult).toEqual(expectedResult);
     },
   );
 
@@ -33,6 +33,6 @@ describe('genDiff tests', () => {
     const [, filepath1, filepath2] = getBeforeAfterFiles('json');
     const expectedResult = getExpected('stylish');
     const actualResult = genDiff(filepath1, filepath2);
-    expect(expectedResult).toEqual(actualResult);
+    expect(actualResult).toEqual(expectedResult);
   });
 });
