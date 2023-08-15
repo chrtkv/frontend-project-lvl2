@@ -21,12 +21,6 @@
   "scripts": {
     "test": "jest"
   },
-  "jest": {
-    "testPathIgnorePatterns": [
-      "/__fixtures__/",
-      "/__utils__/"
-    ]
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/chrtkv/frontend-project-lvl2.git"
