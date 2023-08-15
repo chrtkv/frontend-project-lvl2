@@ -20,8 +20,8 @@ export default (diff, indentChar = ' ', indentCharsCount = 4) => {
 
     if (_.has(data, 'type')) {
       const {
-        type,
         key,
+        type,
         value1,
         value2,
       } = data;
