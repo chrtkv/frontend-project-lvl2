@@ -10,10 +10,6 @@ export default (diff, indentChar = ' ', indentCharsCount = 4) => {
     const indent = indentChar.repeat(depth * indentCharsCount);
     const bracketIndent = indentChar.repeat((depth - 1) * indentCharsCount);
 
-    if (!_.isObject(data)) {
-      return `${data}`;
-    }
-
     if (_.has(data, 'type')) {
       const {
         key,
@@ -48,12 +44,16 @@ export default (diff, indentChar = ' ', indentCharsCount = 4) => {
       return iter(formattedLines, depth);
     }
 
-    const formattedLines = data.flatMap((item) => iter(item, depth));
-    return [
-      '{',
-      ...formattedLines,
-      `${bracketIndent}}`,
-    ].join('\n');
+    if (_.isArray(data)) {
+      const formattedLines = data.flatMap((item) => iter(item, depth));
+      return [
+        '{',
+        ...formattedLines,
+        `${bracketIndent}}`,
+      ].join('\n');
+    }
+
+    return `${data}`;
   };
 
   return iter(diff, 1);
