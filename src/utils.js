@@ -12,11 +12,11 @@ const extractFormat = (filepath) => {
   return extension.slice(1);
 };
 
-const buildComparisonTree = (data1, data2, key = null) => {
+const buildTree = (data1, data2, key = null) => {
   if (_.isPlainObject(data1) && _.isPlainObject(data2)) {
     const keys = _.sortBy(_.union(_.keys(data1), _.keys(data2)));
     const children = keys
-      .map((keyName) => buildComparisonTree(data1[keyName], data2[keyName], keyName));
+      .map((keyName) => buildTree(data1[keyName], data2[keyName], keyName));
 
     if (_.isNull(key)) {
       return children;
@@ -45,4 +45,4 @@ const buildComparisonTree = (data1, data2, key = null) => {
   return { key, type: 'unchanged', value1: data1 };
 };
 
-export { buildComparisonTree, extractFormat, readFile };
+export { buildTree, extractFormat, readFile };
