@@ -1,4 +1,4 @@
-import getFormatter from './formatters/index.js';
+import formatter from './formatters/index.js';
 import parse from './parser.js';
 import { buildComparisonTree, extractFormat, readFile } from './utils.js';
 
@@ -9,8 +9,7 @@ const genDiff = (filepath1, filepath2, formatName = 'stylish') => {
   const parsedData2 = parse(readFile(filepath2), fileFormat2);
   const comparisonTree = buildComparisonTree(parsedData1, parsedData2);
 
-  const formatter = getFormatter(formatName);
-  const formattedDiff = formatter(comparisonTree);
+  const formattedDiff = formatter[formatName](comparisonTree);
   return formattedDiff;
 };
 
