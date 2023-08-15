@@ -1,6 +1,6 @@
 import fs from 'fs';
-import _ from 'lodash';
 import path from 'path';
+import _ from 'lodash';
 
 const readFile = (filepath) => {
   const fullPath = path.resolve(process.cwd(), filepath);
