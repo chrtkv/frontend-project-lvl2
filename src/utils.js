@@ -12,54 +12,37 @@ const extractFormat = (filepath) => {
   return extension.slice(1);
 };
 
-const buildComparisonTree = (data1, data2) => {
-  const iter = (innerData1, innerData2, keyName) => {
-    if (_.isPlainObject(innerData1) && _.isPlainObject(innerData2)) {
-      const keys = _.sortBy(_.union(_.keys(innerData1), _.keys(innerData2)));
-      const children = keys.map((key) => iter(innerData1[key], innerData2[key], key));
+const buildComparisonTree = (data1, data2, key = null) => {
+  if (_.isPlainObject(data1) && _.isPlainObject(data2)) {
+    const keys = _.sortBy(_.union(_.keys(data1), _.keys(data2)));
+    const children = keys
+      .map((keyName) => buildComparisonTree(data1[keyName], data2[keyName], keyName));
 
-      if (_.isUndefined(keyName)) {
-        return children;
-      }
-
-      return {
-        children,
-        key: keyName,
-        type: 'nested',
-      };
+    if (_.isNull(key)) {
+      return children;
     }
 
-    if (_.isUndefined(innerData1) && !_.isUndefined(innerData2)) {
-      return {
-        key: keyName,
-        type: 'added',
-        value2: innerData2,
-      };
-    }
-    if (!_.isUndefined(innerData1) && _.isUndefined(innerData2)) {
-      return {
-        key: keyName,
-        type: 'removed',
-        value1: innerData1,
-      };
-    }
-    if (!_.isEqual(innerData1, innerData2)) {
-      return {
-        key: keyName,
-        type: 'updated',
-        value1: innerData1,
-        value2: innerData2,
-      };
-    }
+    return { key, type: 'nested', children };
+  }
 
+  if (_.isUndefined(data1) && !_.isUndefined(data2)) {
+    return { key, type: 'added', value2: data2 };
+  }
+
+  if (!_.isUndefined(data1) && _.isUndefined(data2)) {
+    return { key, type: 'removed', value1: data1 };
+  }
+
+  if (!_.isEqual(data1, data2)) {
     return {
-      key: keyName,
-      type: 'unchanged',
-      value1: innerData1,
+      key,
+      type: 'updated',
+      value1: data1,
+      value2: data2,
     };
-  };
+  }
 
-  return iter(data1, data2);
+  return { key, type: 'unchanged', value1: data1 };
 };
 
 export { buildComparisonTree, extractFormat, readFile };
