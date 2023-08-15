@@ -4,14 +4,12 @@ env:
   jest: true
 extends:
   - airbnb-base
-  - plugin:perfectionist/recommended-alphabetical
 overrides: []
 parserOptions:
   ecmaVersion: latest
   sourceType: module
 plugins:
   - fp
-  - perfectionist
 rules:
   no-console: off
   import/extensions: off
