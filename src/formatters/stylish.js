@@ -14,18 +14,18 @@ export default (diff, indentChar = ' ', indentCharsCount = 4) => {
       return `${data}`;
     }
 
-    if (_.has(data, 'children')) {
-      return `${indent}${data.key}: ${iter(data.children, depth + 1)}`;
-    }
-
     if (_.has(data, 'type')) {
       const {
         key,
         type,
         value1,
         value2,
+        children,
       } = data;
+
       switch (type) {
+        case 'nested':
+          return `${indent}${key}: ${iter(children, depth + 1)}`;
         case 'unchanged':
           return `${indent}${key}: ${iter(value1, depth + 1)}`;
         case 'updated':
