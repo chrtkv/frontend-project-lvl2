@@ -44,16 +44,16 @@ export default (diff, indentChar = ' ', indentCharsCount = 4) => {
       return iter(formattedLines, depth);
     }
 
-    if (_.isArray(data)) {
-      const formattedLines = data.flatMap((item) => iter(item, depth));
-      return [
-        '{',
-        ...formattedLines,
-        `${bracketIndent}}`,
-      ].join('\n');
+    if (!_.isObject(data)) {
+      return `${data}`;
     }
 
-    return `${data}`;
+    const formattedLines = data.flatMap((item) => iter(item, depth));
+    return [
+      '{',
+      ...formattedLines,
+      `${bracketIndent}}`,
+    ].join('\n');
   };
 
   return iter(diff, 1);

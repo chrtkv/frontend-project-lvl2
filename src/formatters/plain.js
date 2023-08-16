@@ -35,14 +35,14 @@ const format = (data, path = '') => {
     return `'${data}'`;
   }
 
-  if (_.isArray(data)) {
-    return data
-      .map((item) => format(item, path))
-      .filter(_.identity)
-      .join('\n');
+  if (!_.isObject(data)) {
+    return data;
   }
 
-  return data;
+  return data
+    .map((item) => format(item, path))
+    .filter(_.identity)
+    .join('\n');
 };
 
 export default format;
