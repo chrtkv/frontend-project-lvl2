@@ -1,5 +1,5 @@
-import plainFormatter from './plain';
-import stylishFormatter from './stylish';
+import plainFormatter from './plain.js';
+import stylishFormatter from './stylish.js';
 
 export default (tree, formatName) => {
   const formatterMapping = {

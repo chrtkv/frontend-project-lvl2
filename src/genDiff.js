@@ -2,8 +2,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import format from './formatters/index';
-import parse from './parser';
-import buildTree from './buildTree';
+import parse from './parser.js';
+import buildTree from './buildTree.js';
 
 const readFile = (filepath) => {
   const fullPath = path.resolve(process.cwd(), filepath);
