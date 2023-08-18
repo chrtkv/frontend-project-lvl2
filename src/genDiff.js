@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import format from './formatters/index';
+import format from './formatters/index.js';
 import parse from './parser.js';
 import buildTree from './buildTree.js';
 
