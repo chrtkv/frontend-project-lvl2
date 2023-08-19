@@ -21,7 +21,6 @@ const render = (diff, path) => diff
     children,
   }) => {
     const commonPart = `Property '${path}${key}' was ${type}`;
-
     switch (type) {
       case 'nested':
         return `${render(children, `${path}${key}.`)}`;
