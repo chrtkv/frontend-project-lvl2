@@ -9,7 +9,11 @@ const __dirname = path.dirname(__filename);
 const fixturesPath = `${__dirname}/../__fixtures__/`;
 
 const getExpected = (formatterName) => readFileSync(`${fixturesPath}expected.${formatterName}.txt`, 'utf-8');
-const getBeforeAfterFiles = (fileFormat) => [fileFormat, `${fixturesPath}before.${fileFormat}`, `${fixturesPath}after.${fileFormat}`];
+const getBeforeAfterFiles = (fileFormat) => [
+  fileFormat,
+  `${fixturesPath}before.${fileFormat}`,
+  `${fixturesPath}after.${fileFormat}`,
+];
 const getCombinations = (formatters, formats) => formatters
   .flatMap((formatter) => formats
     .map(getBeforeAfterFiles)
