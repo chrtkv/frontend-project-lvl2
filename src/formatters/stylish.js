@@ -34,7 +34,7 @@ const stringify = (data, depth) => {
   ].join('\n');
 };
 
-const render = (diff, depth = 1) => stringify(diff
+const render = (diff, depth) => stringify(diff
   .flatMap(({
     key,
     type,
@@ -61,4 +61,4 @@ const render = (diff, depth = 1) => stringify(diff
     }
   }), depth);
 
-export default (diff) => render(diff);
+export default (diff) => render(diff, 1);

@@ -1,33 +1,7 @@
 import _ from 'lodash';
 
-const format = (data, path = '') => {
-  if (_.has(data, 'type')) {
-    const {
-      children,
-      key,
-      type,
-      value1,
-      value2,
-    } = data;
-    const commonPart = `Property '${path}${key}' was ${type}`;
-
-    switch (type) {
-      case 'nested':
-        return `${format(children, `${path}${key}.`)}`;
-      case 'unchanged':
-        return '';
-      case 'updated':
-        return `${commonPart}. From ${format(value1, path)} to ${format(value2, path)}`;
-      case 'removed':
-        return commonPart;
-      case 'added':
-        return `${commonPart} with value: ${format(value2, path)}`;
-      default:
-        throw new Error(`Unknown type: ${type}`);
-    }
-  }
-
-  if (_.isPlainObject(data)) {
+const stringify = (data) => {
+  if (_.isObject(data)) {
     return '[complex value]';
   }
 
@@ -35,14 +9,35 @@ const format = (data, path = '') => {
     return `'${data}'`;
   }
 
-  if (!_.isObject(data)) {
-    return data;
-  }
-
-  return data
-    .map((item) => format(item, path))
-    .filter(_.identity)
-    .join('\n');
+  return data;
 };
 
-export default format;
+const render = (diff, path) => diff
+  .flatMap(({
+    key,
+    type,
+    value1,
+    value2,
+    children,
+  }) => {
+    const commonPart = `Property '${path}${key}' was ${type}`;
+
+    switch (type) {
+      case 'nested':
+        return `${render(children, `${path}${key}.`)}`;
+      case 'unchanged':
+        return '';
+      case 'updated':
+        return `${commonPart}. From ${stringify(value1)} to ${stringify(value2)}`;
+      case 'removed':
+        return commonPart;
+      case 'added':
+        return `${commonPart} with value: ${stringify(value2)}`;
+      default:
+        throw new Error(`Unknown type: ${type}`);
+    }
+  })
+  .filter(_.identity)
+  .join('\n');
+
+export default (diff) => render(diff, '');
