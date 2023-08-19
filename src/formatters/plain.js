@@ -12,7 +12,7 @@ const stringify = (data) => {
   return data;
 };
 
-const render = (diff, path) => diff
+const render = (tree, path) => tree
   .flatMap(({
     key,
     type,
@@ -39,4 +39,4 @@ const render = (diff, path) => diff
   .filter(_.identity)
   .join('\n');
 
-export default (diff) => render(diff, '');
+export default (tree) => render(tree, '');

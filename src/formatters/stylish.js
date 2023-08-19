@@ -8,9 +8,11 @@ const INDENT_CHARS_COUNT = 4;
 
 const formatIndent = (depth, typeSign = ' ') => {
   const indent = INDENT_CHAR.repeat(depth * INDENT_CHARS_COUNT);
-  const cb = (char, index, arr) => ((arr.length - OFFSET_FROM_END === index) ? typeSign : char);
+  const replaceTypeSign = (char, index, arr) => (
+    (arr.length - OFFSET_FROM_END === index) ? typeSign : char
+  );
 
-  return indent.split('').map(cb).join('');
+  return indent.split('').map(replaceTypeSign).join('');
 };
 
 const stringify = (data, depth) => {
@@ -34,7 +36,7 @@ const stringify = (data, depth) => {
   ].join('\n');
 };
 
-const render = (diff, depth) => stringify(diff
+const render = (tree, depth) => stringify(tree
   .flatMap(({
     key,
     type,
@@ -61,4 +63,4 @@ const render = (diff, depth) => stringify(diff
     }
   }), depth);
 
-export default (diff) => render(diff, 1);
+export default (tree) => render(tree, 1);
