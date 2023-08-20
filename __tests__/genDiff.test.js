@@ -20,17 +20,17 @@ const fileFormats = ['yml', 'json', 'yaml'];
 describe.each(formatters)('%s formatter', (formatter) => {
   it.each(fileFormats)('should work with %s file', (fileFormat) => {
     const [filepath1, filepath2] = getBeforeAfterFiles(fileFormat);
-    const expectedResult = getExpected(formatter);
     const actualResult = genDiff(filepath1, filepath2, formatter);
+    const expectedResult = getExpected(formatter);
     expect(actualResult).toEqual(expectedResult);
   });
 });
 
 describe('default formatter', () => {
-  it.each(fileFormats)('should be stylish and work with %s file', (fileFormat) => {
-    const [filepath1, filepath2] = getBeforeAfterFiles(fileFormat);
-    const expectedResult = getExpected('stylish');
+  it('should be stylish', () => {
+    const [filepath1, filepath2] = getBeforeAfterFiles('json');
     const actualResult = genDiff(filepath1, filepath2);
+    const expectedResult = getExpected('stylish');
     expect(actualResult).toEqual(expectedResult);
   });
 });
