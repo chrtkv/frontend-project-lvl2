@@ -3,13 +3,13 @@ import _ from 'lodash';
 const REMOVED_TYPE_SIGN = '-';
 const ADDED_TYPE_SIGN = '+';
 const OFFSET_FROM_END = 2; // Offset from the end of the indent
-const INDENT_CHAR = ' ';
-const INDENT_CHARS_COUNT = 4;
+const TAB = ' ';
+const TAB_SIZE = 4;
 
 const formatIndent = (depth, typeSign = ' ') => {
-  const indent = INDENT_CHAR.repeat(depth * INDENT_CHARS_COUNT);
-  const replaceTypeSign = (char, index, arr) => (
-    (arr.length - OFFSET_FROM_END === index) ? typeSign : char
+  const indent = TAB.repeat(depth * TAB_SIZE);
+  const replaceTypeSign = (tab, index, arr) => (
+    (arr.length - OFFSET_FROM_END === index) ? typeSign : tab
   );
 
   return indent.split('').map(replaceTypeSign).join('');
