@@ -13,7 +13,7 @@ const stringify = (data) => {
 };
 
 const render = (tree, path) => tree
-  .flatMap(({
+  .map(({
     key,
     type,
     value1,
@@ -25,7 +25,7 @@ const render = (tree, path) => tree
       case 'nested':
         return `${render(children, `${path}${key}.`)}`;
       case 'unchanged':
-        return '';
+        return null;
       case 'updated':
         return `${commonPart}. From ${stringify(value1)} to ${stringify(value2)}`;
       case 'removed':
