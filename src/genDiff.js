@@ -5,19 +5,11 @@ import format from './formatters/index.js';
 import parse from './parser.js';
 import buildTree from './buildTree.js';
 
-const readFile = (filepath) => {
-  const fullPath = path.resolve(process.cwd(), filepath);
-  return fs.readFileSync(fullPath, 'utf-8');
-};
-
-const extractFileFormat = (filepath) => {
-  const extension = path.extname(filepath);
-  return extension.slice(1);
-};
-
 const getData = (filepath) => {
-  const fileFormat = extractFileFormat(filepath);
-  const data = readFile(filepath);
+  const fullPath = path.resolve(process.cwd(), filepath);
+  const fileFormat = path.extname(fullPath).slice(1);
+  const data = fs.readFileSync(fullPath, 'utf-8');
+
   return parse(data, fileFormat);
 };
 
